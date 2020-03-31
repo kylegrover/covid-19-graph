@@ -9,7 +9,7 @@ const covidSchema = {
 
 const covidDataBaseURL = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series';
 
-const confirmedPalette = ['#DDDDDD', '#CCCCCC', '#BBBBBB', '#AAAAAA', '#999999'];
+const confirmedPalette = ['#BBBBBB', '#AAAAAA', '#999999', '#888888', '#777777'];
 const recoveredPalette = ['#4BC0C0', '#1D5353', '#379E9E', '#4BC0C0', '#2A7878'];
 const deathsPalette = ['#FF6384', '#93001D', '#F90031', '#FF2D57', '#C60027'];
 const activePalette = ['#FF9F40', '#703600', '#D66700', '#FF800A', '#A34E00'];
@@ -39,7 +39,7 @@ const covidDataTypes = {
     alertClass: 'alert-danger',
     badgeClass: 'badge-danger',
   },
-  active: {
+  active: { // i want to move this above recovered but it breaks shit
     key: 'active',
     title: 'Active',
     dataSourceUrl: `math`,
@@ -168,14 +168,9 @@ function loadCovidData() {
       );
     })
     .then(data => {
-
-      // CALCULATIONS ARE GENERALLY WORKING BUT FOR SOME REASON IT CHANGES THE CONFIRMED CASE COUNT :(
-
-      console.log(data);
       data.ticks.active = []
       data.ticks.confirmed.forEach(tick => {
         var header = [tick[0],tick[1],tick[2],tick[3]];
-        // console.log(header[0]+header[1]);
         activeTick = header;
         const deaths = data.ticks.deaths.filter(deathData => deathData[0]+deathData[1] == header[0]+header[1])[0];
         const recovs = data.ticks.recovered.filter(recoveredData => recoveredData[0]+recoveredData[1] == header[0]+header[1])[0];
@@ -185,11 +180,9 @@ function loadCovidData() {
           recovsi = 0;
           if (recovs) recovsi = recovs[i];
           activeTick[i] = tick[i] - deathsi - recovsi;
-          // console.log(deathsi, recovsi, tick[i])
         }
         data.ticks.active.push(activeTick)
       });
-      // console.log(data.ticks);
       return data;
     });
     return covidData;
