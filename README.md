@@ -1,6 +1,6 @@
 # Coronavirus (COVID-19) Dashboard
 
-📈 [**Coronavirus (COVID-19) Dashboard**](https://covid19graphs.netlify.com/) shows the dynamics (the curvature of the graph) of Сoronavirus distribution per country.
+📈 [**Coronavirus (COVID-19) Dashboard**](https://covid19graph.netlify.com/) shows the dynamics (the curvature of the graph) of Сoronavirus distribution per country.
 
 ## Reasoning
 
