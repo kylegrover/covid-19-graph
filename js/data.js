@@ -9,9 +9,10 @@ const covidSchema = {
 
 const covidDataBaseURL = 'https://raw.githubusercontent.com/CSSEGISandData/COVID-19/master/csse_covid_19_data/csse_covid_19_time_series';
 
-const confirmedPalette = ['#FF9F40', '#703600', '#D66700', '#FF800A', '#A34E00'];
+const confirmedPalette = ['#DDDDDD', '#CCCCCC', '#BBBBBB', '#AAAAAA', '#999999'];
 const recoveredPalette = ['#4BC0C0', '#1D5353', '#379E9E', '#4BC0C0', '#2A7878'];
 const deathsPalette = ['#FF6384', '#93001D', '#F90031', '#FF2D57', '#C60027'];
+const activePalette = ['#FF9F40', '#703600', '#D66700', '#FF800A', '#A34E00'];
 
 const covidDataTypes = {
   confirmed: {
@@ -19,8 +20,8 @@ const covidDataTypes = {
     title: 'Confirmed',
     dataSourceUrl: `${covidDataBaseURL}/time_series_covid19_confirmed_global.csv`,
     borderColor: confirmedPalette,
-    alertClass: 'alert-warning',
-    badgeClass: 'badge-warning',
+    alertClass: 'alert-secondary',
+    badgeClass: 'badge-secondary',
   },
   recovered: {
     key: 'recovered',
@@ -37,6 +38,14 @@ const covidDataTypes = {
     borderColor: deathsPalette,
     alertClass: 'alert-danger',
     badgeClass: 'badge-danger',
+  },
+  active: {
+    key: 'active',
+    title: 'Active',
+    dataSourceUrl: `math`,
+    borderColor: activePalette,
+    alertClass: 'alert-warning',
+    badgeClass: 'badge-warning',
   },
 };
 
@@ -55,6 +64,10 @@ const covidSorts = {
   confirmed: {
     key: 'confirmed',
     dataKey: covidDataTypes.confirmed.key,
+  },
+  active: {
+    key: 'active',
+    dataKey: covidDataTypes.active.key,
   },
   recovered: {
     key: 'recovered',
@@ -111,8 +124,8 @@ function loadCovidData() {
     labels: [],
     ticks: {},
   };
-  return Promise
-    .all(Object.values(covidDataTypes).map(
+  covidData = Promise
+    .all(Object.values(covidDataTypes).filter(item => item.dataSourceUrl != 'math').map(
       dataType => fetch(dataType.dataSourceUrl)
     ))
     .then(responses => Promise.all(
@@ -153,7 +166,33 @@ function loadCovidData() {
         },
         defaultDataContainer
       );
+    })
+    .then(data => {
+
+      // CALCULATIONS ARE GENERALLY WORKING BUT FOR SOME REASON IT CHANGES THE CONFIRMED CASE COUNT :(
+
+      console.log(data);
+      data.ticks.active = []
+      data.ticks.confirmed.forEach(tick => {
+        var header = [tick[0],tick[1],tick[2],tick[3]];
+        // console.log(header[0]+header[1]);
+        activeTick = header;
+        const deaths = data.ticks.deaths.filter(deathData => deathData[0]+deathData[1] == header[0]+header[1])[0];
+        const recovs = data.ticks.recovered.filter(recoveredData => recoveredData[0]+recoveredData[1] == header[0]+header[1])[0];
+        for (let i = 4; i < tick.length; i++) {
+          deathsi = 0;
+          if (deaths) deathsi = deaths[i];
+          recovsi = 0;
+          if (recovs) recovsi = recovs[i];
+          activeTick[i] = tick[i] - deathsi - recovsi;
+          // console.log(deathsi, recovsi, tick[i])
+        }
+        data.ticks.active.push(activeTick)
+      });
+      // console.log(data.ticks);
+      return data;
     });
+    return covidData;
 }
 
 function getRegionKey(regionTicks) {

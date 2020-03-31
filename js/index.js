@@ -346,6 +346,10 @@ function RegionsTable({
           covidDataTypes.confirmed.title,
           e(ColumnSorter, {sortDirection: dataSort === covidSorts.confirmed.key ? dataSortDirection : null})
         ),
+        e('th', {sortable: 'sortable', onClick: () => onColumnSort(covidSorts.active.key)},
+          covidDataTypes.active.title,
+          e(ColumnSorter, {sortDirection: dataSort === covidSorts.active.key ? dataSortDirection : null})
+        ),
         e('th', {sortable: 'sortable', onClick: () => onColumnSort(covidSorts.recovered.key)},
           covidDataTypes.recovered.title,
           e(ColumnSorter, {sortDirection: dataSort === covidSorts.recovered.key ? dataSortDirection : null})
@@ -394,6 +398,7 @@ function RegionsTable({
           e('td', null, e('small', {className: 'text-muted'}, `#${regionIndex + 1}`)),
           e('td', null, region.key),
           e('td', null, region.numbers[covidDataTypes.confirmed.key]),
+          e('td', null, region.numbers[covidDataTypes.active.key]),
           e('td', null, region.numbers[covidDataTypes.recovered.key]),
           e('td', null, region.numbers[covidDataTypes.deaths.key]),
         )
