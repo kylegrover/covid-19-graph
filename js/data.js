@@ -169,9 +169,9 @@ function loadCovidData() {
     })
     .then(data => {
       data.ticks.active = []
-      data.ticks.estFromDeathsRecovs = [];
-      data.ticks.estFromConfirmed = [];
-      data.ticks.estAverage = [];
+      // data.ticks.estFromDeathsRecovs = [];
+      // data.ticks.estFromConfirmed = [];
+      // data.ticks.estAverage = [];
       data.ticks.confirmed.forEach(tick => {
         var header = [tick[0],tick[1],tick[2],tick[3]];
         var activeTick, efdrTick, efcTick = header;
@@ -185,8 +185,8 @@ function loadCovidData() {
           activeTick[i] = tick[i] - deathsi - recovsi;
         }
         data.ticks.active.push(activeTick)
-        data.ticks.estFromDeathsRecovs.push(efdrTick)
-        data.ticks.estFromConfirmed.push(efcTick)
+        // data.ticks.estFromDeathsRecovs.push(efdrTick)
+        // data.ticks.estFromConfirmed.push(efcTick)
       });
       return data;
     });
