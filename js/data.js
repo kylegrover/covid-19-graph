@@ -173,8 +173,11 @@ function loadCovidData() {
       // data.ticks.estFromConfirmed = [];
       // data.ticks.estAverage = [];
       data.ticks.confirmed.forEach(tick => {
-        var header = [tick[0],tick[1],tick[2],tick[3]];
-        var activeTick, efdrTick, efcTick = header;
+        const header = [tick[0],tick[1],tick[2],tick[3]];
+        let activeTick = header;
+        let efdrTick = header; 
+        let efcTick = header;
+        console.log(activeTick)
         const deaths = data.ticks.deaths.filter(deathData => deathData[0]+deathData[1] == header[0]+header[1])[0];
         const recovs = data.ticks.recovered.filter(recoveredData => recoveredData[0]+recoveredData[1] == header[0]+header[1])[0];
         for (let i = 4; i < tick.length; i++) {
